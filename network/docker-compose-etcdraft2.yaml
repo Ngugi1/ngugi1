@@ -1,0 +1,85 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer2.coffeechain.com:
+  orderer3.coffeechain.com:
+  orderer4.coffeechain.com:
+  orderer5.coffeechain.com:
+
+networks:
+  coffeechainnetwork:
+
+services:
+
+  orderer2.coffeechain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=8050
+    container_name: orderer2.coffeechain.com
+    networks:
+      - coffeechainnetwork
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer2.coffeechain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer2.coffeechain.com/tls/:/var/hyperledger/orderer/tls
+      - orderer2.coffeechain.com:/var/hyperledger/production/orderer
+    ports:
+      - 8050:8050
+
+  orderer3.coffeechain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=9050
+    container_name: orderer3.coffeechain.com
+    networks:
+      - coffeechainnetwork
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer3.coffeechain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer3.coffeechain.com/tls/:/var/hyperledger/orderer/tls
+      - orderer3.coffeechain.com:/var/hyperledger/production/orderer
+    ports:
+      - 9050:9050
+
+  orderer4.coffeechain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=10050
+    container_name: orderer4.coffeechain.com
+    networks:
+      - coffeechainnetwork
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer4.coffeechain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer4.coffeechain.com/tls/:/var/hyperledger/orderer/tls
+      - orderer4.coffeechain.com:/var/hyperledger/production/orderer
+    ports:
+      - 10050:10050
+
+  orderer5.coffeechain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=11050
+    container_name: orderer5.coffeechain.com
+    networks:
+      - coffeechainnetwork
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer5.coffeechain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/coffeechain.com/orderers/orderer5.coffeechain.com/tls/:/var/hyperledger/orderer/tls
+      - orderer5.coffeechain.com:/var/hyperledger/production/orderer
+    ports:
+      - 11050:11050

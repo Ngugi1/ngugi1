@@ -1,0 +1,178 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: "2"
+volumes:
+  orderer.coffeechain.com:
+  # orderer1.coffeechain.com:
+  # orderer2.coffeechain.com:
+  # orderer3.coffeechain.com:
+  # orderer4.coffeechain.com:
+
+  peer0.cooperative.coffeechain.com:
+  peer1.cooperative.coffeechain.com:
+
+  peer0.transport.coffeechain.com:
+  peer1.transport.coffeechain.com:
+
+  peer0.insurance.coffeechain.com:
+  peer1.insurance.coffeechain.com:
+
+  peer0.miller.coffeechain.com:
+  peer1.miller.coffeechain.com:
+
+
+networks:
+  coffeechainnetwork:
+
+services:
+
+  orderer1.coffeechain.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.coffeechain.com
+    container_name: orderer1.coffeechain.com
+    networks:
+      - coffeechainnetwork
+
+  # orderer2.coffeechain.com:
+  #   extends:
+  #    file: base/docker-compose-base.yaml
+  #    service: orderer.coffeechain.com
+  #   container_name: orderer2.coffeechain.com
+  #   networks:
+  #     - coffeechainnetwork
+
+  # orderer3.coffeechain.com:
+  #   extends:
+  #     file:   base/docker-compose-base.yaml
+  #     service: orderer.coffeechain.com
+  #   container_name: orderer3.coffeechain.com
+  #   networks:
+  #     - coffeechainnetwork
+
+  # orderer4.coffeechain.com:
+  #   extends:
+  #    file: base/docker-compose-base.yaml
+  #    service: orderer.coffeechain.com
+  #   container_name: orderer4.coffeechain.com
+  #   networks:
+  #     - coffeechainnetwork
+
+  # Cooperative Peers
+  peer0.cooperative.coffeechain.com:
+    container_name: peer0.cooperative.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.cooperative.coffeechain.com
+    networks:
+      - coffeechainnetwork
+
+  peer1.cooperative.coffeechain.com:
+    container_name: peer1.cooperative.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.cooperative.coffeechain.com
+    networks:
+      - coffeechainnetwork
+  # End cooperative peers
+
+
+  #Transport  Peers
+  peer0.transport.coffeechain.com:
+    container_name: peer0.transport.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.transport.coffeechain.com
+    networks:
+      - coffeechainnetwork
+
+  peer1.transport.coffeechain.com:
+    container_name: peer1.transport.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.transport.coffeechain.com
+    networks:
+      - coffeechainnetwork
+  # End transport peers
+
+
+  #Insurance  peers
+  peer0.insurance.coffeechain.com:
+    container_name: peer0.insurance.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.insurance.coffeechain.com
+    networks:
+      - coffeechainnetwork
+
+  peer1.insurance.coffeechain.com:
+    container_name: peer1.insurance.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.insurance.coffeechain.com
+    networks:
+      - coffeechainnetwork
+  # End insurance peers
+
+  # Miller  peers
+  peer0.miller.coffeechain.com:
+    container_name: peer0.miller.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.miller.coffeechain.com
+    networks:
+      - coffeechainnetwork
+
+  peer1.miller.coffeechain.com:
+    container_name: peer1.miller.coffeechain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.miller.coffeechain.com
+    networks:
+      - coffeechainnetwork
+  # End miller peers
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.cooperative.coffeechain.com:7051
+      - CORE_PEER_LOCALMSPID=CooperativeOrgMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/cooperative.coffeechain.com/peers/peer0.cooperative.coffeechain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/cooperative.coffeechain.com/peers/peer0.cooperative.coffeechain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/cooperative.coffeechain.com/peers/peer0.cooperative.coffeechain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/cooperative.coffeechain.com/users/Admin@cooperative.coffeechain.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/hyperledger/chained-coffee/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer1.coffeechain.com
+      # - orderer2.coffeechain.com
+      # - orderer3.coffeechain.com
+      # - orderer4.coffeechain.com
+      - peer0.cooperative.coffeechain.com
+      - peer1.cooperative.coffeechain.com
+      - peer0.transport.coffeechain.com
+      - peer1.transport.coffeechain.com
+      - peer0.insurance.coffeechain.com
+      - peer1.insurance.coffeechain.com
+      - peer0.miller.coffeechain.com
+      - peer1.miller.coffeechain.com
+    networks:
+      - coffeechainnetwork

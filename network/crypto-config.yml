@@ -1,0 +1,51 @@
+# Step 1
+# Orderer Org is used to estabish order of transactions
+OrdererOrgs:
+  - Name: Orderer
+    Domain: coffeechain.com
+    Specs:
+      - Hostname: orderer1
+      - Hostname: orderer2
+      - Hostname: orderer3
+      - Hostname: orderer4
+PeerOrgs:
+  # Cooperative organisation collects all produce from farmers
+  # and arranges for transport to the millers. It also guarantees
+  # minimal returns for the farmers by partnering with and insurance company
+  - Name: CooperativeOrg
+    Domain: cooperative.coffeechain.com
+    Template:
+      # Number peers
+      Count: 2
+    Users:
+      # Number of users apart from admin
+      Count: 2
+  # Transport Org is contracted by the cooperative to transport the
+  # produce to the coffee millers
+  - Name: TransportOrg
+    Domain: transport.coffeechain.com
+    Template:
+      # Number of peers
+      Count: 2
+    Users:
+      # Number of users apart from admin
+      Count: 2
+
+  # Insurance org covers the cooperative for predefined calamities
+  - Name: InsuranceOrg
+    Domain: insurance.coffeechain.com
+    Template:
+      # Number of peers
+      Count: 2
+    Users:
+      # Number of users apart from admin
+      Count: 2
+# Millers buy the coffee from the cooperative
+  - Name: MillerOrg
+    Domain: miller.coffeechain.com
+    Tepmlate:
+      # Number of peers
+      Count: 2
+    Users:
+      # Number of users apart from admin
+      Count: 2
